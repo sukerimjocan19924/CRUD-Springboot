@@ -17,12 +17,10 @@ public class Member {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private String name;
-
     private String email;
-
     private String password;
+    private String role;
 
     private LocalDateTime createdAt;
 
@@ -30,6 +28,7 @@ public class Member {
         this.name = name;
         this.email=email;
         this.password=password;
+        this.role="ROLE_USER";
         this.createdAt=LocalDateTime.now();
     }
 
