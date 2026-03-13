@@ -6,6 +6,7 @@ import com.example.demo.dto.MemberResponse;
 import com.example.demo.dto.UpdateMemberRequest;
 import com.example.demo.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,20 +20,25 @@ public class MemberService {
 
     private final MemberRepository memberRepository;
 
+    private final PasswordEncoder passwordEncoder;
+
     //회원 생성
     public MemberResponse create(CreateMemberRequest request){
         if(memberRepository.existsByEmail(request.getEmail())){
             throw new IllegalArgumentException("이미 사용중인 이메일 입니다.");
         }
 
+        String encodedPassword = passwordEncoder.encode(request.getPassword());
+
         Member member= new Member(
                 request.getName(),
                 request.getEmail(),
-                request.getPassword()
+                encodedPassword,
+                "ROLE_USER"
         );
 
-        Member saved = memberRepository.save(member);
-        return new MemberResponse(saved);
+        memberRepository.save(member);
+        return new MemberResponse(member);
     }
 
     //회원 조회
